@@ -5,6 +5,7 @@ interface EnvVars {
   PORT: number;
   RABBITMQ_URL: string;
   AUTH_QUEUE: string;
+  CATALOG_QUEUE: string;
   JWT_PUBLIC_KEY: string;
 }
 
@@ -13,6 +14,7 @@ const envsSchema = joi
     PORT: joi.number().required(),
     RABBITMQ_URL: joi.string().required(),
     AUTH_QUEUE: joi.string().required(),
+    CATALOG_QUEUE: joi.string().required(),
     JWT_PUBLIC_KEY: joi.string().base64().required(),
   })
   .unknown(true);
@@ -32,5 +34,6 @@ export const envs = {
   port: envVars.PORT,
   rabbitmqUrl: envVars.RABBITMQ_URL,
   authQueue: envVars.AUTH_QUEUE,
+  catalogQueue: envVars.CATALOG_QUEUE,
   jwtPublicKey: Buffer.from(envVars.JWT_PUBLIC_KEY, 'base64').toString('utf8'),
 };
