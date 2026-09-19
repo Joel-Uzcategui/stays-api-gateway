@@ -5,7 +5,7 @@ interface EnvVars {
   PORT: number;
   RABBITMQ_URL: string;
   AUTH_QUEUE: string;
-  JWT_SECRET: string;
+  JWT_PUBLIC_KEY: string;
 }
 
 const envsSchema = joi
@@ -13,21 +13,24 @@ const envsSchema = joi
     PORT: joi.number().required(),
     RABBITMQ_URL: joi.string().required(),
     AUTH_QUEUE: joi.string().required(),
-    JWT_SECRET: joi.string().min(16).required(),
+    JWT_PUBLIC_KEY: joi.string().base64().required(),
   })
   .unknown(true);
 
-const { error, value } = envsSchema.validate(process.env);
+const result = envsSchema.validate(process.env) as {
+  error?: joi.ValidationError;
+  value: EnvVars;
+};
 
-if (error) {
-  throw new Error(`Config validation error: ${error.message}`);
+if (result.error) {
+  throw new Error(`Config validation error: ${result.error.message}`);
 }
 
-const envVars: EnvVars = value as EnvVars;
+const envVars = result.value;
 
 export const envs = {
   port: envVars.PORT,
   rabbitmqUrl: envVars.RABBITMQ_URL,
   authQueue: envVars.AUTH_QUEUE,
-  jwtSecret: envVars.JWT_SECRET,
+  jwtPublicKey: Buffer.from(envVars.JWT_PUBLIC_KEY, 'base64').toString('utf8'),
 };
