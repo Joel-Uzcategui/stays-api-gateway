@@ -23,7 +23,7 @@ export class HotelsPublicController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
+  findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.catalogClient.send('catalog.hotel.findOnePublic', { id });
   }
 }

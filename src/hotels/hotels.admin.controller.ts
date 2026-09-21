@@ -38,17 +38,17 @@ export class HotelsAdminController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
+  findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.catalogClient.send('catalog.hotel.findOne', { id });
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateHotelDto) {
+  update(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string, @Body() dto: UpdateHotelDto) {
     return this.catalogClient.send('catalog.hotel.update', { id, ...dto });
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.catalogClient.send('catalog.hotel.remove', { id });
   }
 }
