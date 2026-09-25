@@ -21,7 +21,8 @@ export class CreateAmenityDto {
   @MinLength(2)
   @MaxLength(60)
   @Matches(/^[a-z0-9_]+$/, {
-    message: 'code must contain only lowercase letters, numbers and underscores',
+    message:
+      'code must contain only lowercase letters, numbers and underscores',
   })
   code: string;
 

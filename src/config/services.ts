@@ -1,2 +1,3 @@
 export const AUTH_SERVICE = 'AUTH_SERVICE';
 export const CATALOG_SERVICE = 'CATALOG_SERVICE';
+export const SEARCH_SERVICE = 'SEARCH_SERVICE';

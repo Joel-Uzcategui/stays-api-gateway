@@ -1,12 +1,5 @@
 import { Type } from 'class-transformer';
-import {
-  IsInt,
-  IsOptional,
-  IsUrl,
-  Max,
-  MaxLength,
-  Min,
-} from 'class-validator';
+import { IsInt, IsOptional, IsUrl, Max, MaxLength, Min } from 'class-validator';
 
 export class CreatePhotoDto {
   @IsUrl({ protocols: ['http', 'https'], require_protocol: true })

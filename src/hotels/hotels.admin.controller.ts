@@ -43,7 +43,10 @@ export class HotelsAdminController {
   }
 
   @Patch(':id')
-  update(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string, @Body() dto: UpdateHotelDto) {
+  update(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Body() dto: UpdateHotelDto,
+  ) {
     return this.catalogClient.send('catalog.hotel.update', { id, ...dto });
   }
 

@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { CitiesModule } from './cities/cities.module';
 import { HealthController } from './health/health.controller';
 import { HotelsModule } from './hotels/hotels.module';
+import { SearchModule } from './search/search.module';
 import { PhotosModule } from './photos/photos.module';
 import { RoomTypesModule } from './room-types/room-types.module';
 
@@ -13,6 +14,7 @@ import { RoomTypesModule } from './room-types/room-types.module';
     AuthModule,
     CitiesModule,
     HotelsModule,
+    SearchModule,
     RoomTypesModule,
     AmenitiesModule,
     PhotosModule,
