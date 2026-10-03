@@ -1,7 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
-import { AUTH_SERVICE, CATALOG_SERVICE, SEARCH_SERVICE, envs } from '../config';
+import {
+  AUTH_SERVICE,
+  BOOKING_SERVICE,
+  CATALOG_SERVICE,
+  SEARCH_SERVICE,
+  envs,
+} from '../config';
 
 const clients = ClientsModule.register([
   {
@@ -28,6 +34,15 @@ const clients = ClientsModule.register([
     options: {
       urls: [envs.rabbitmqUrl],
       queue: envs.searchQueue,
+      queueOptions: { durable: true },
+    },
+  },
+  {
+    name: BOOKING_SERVICE,
+    transport: Transport.RMQ,
+    options: {
+      urls: [envs.rabbitmqUrl],
+      queue: envs.bookingQueue,
       queueOptions: { durable: true },
     },
   },
