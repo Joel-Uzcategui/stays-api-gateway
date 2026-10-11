@@ -5,6 +5,7 @@ import {
   AUTH_SERVICE,
   BOOKING_SERVICE,
   CATALOG_SERVICE,
+  PAYMENT_SERVICE,
   SEARCH_SERVICE,
   envs,
 } from '../config';
@@ -43,6 +44,15 @@ const clients = ClientsModule.register([
     options: {
       urls: [envs.rabbitmqUrl],
       queue: envs.bookingQueue,
+      queueOptions: { durable: true },
+    },
+  },
+  {
+    name: PAYMENT_SERVICE,
+    transport: Transport.RMQ,
+    options: {
+      urls: [envs.rabbitmqUrl],
+      queue: envs.paymentQueue,
       queueOptions: { durable: true },
     },
   },

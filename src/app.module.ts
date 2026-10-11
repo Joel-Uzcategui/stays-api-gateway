@@ -7,6 +7,7 @@ import { CitiesModule } from './cities/cities.module';
 import { HealthController } from './health/health.controller';
 import { HotelsModule } from './hotels/hotels.module';
 import { InventoryModule } from './inventory/inventory.module';
+import { PaymentsModule } from './payments/payments.module';
 import { SearchModule } from './search/search.module';
 import { PhotosModule } from './photos/photos.module';
 import { RoomTypesModule } from './room-types/room-types.module';
@@ -19,6 +20,7 @@ import { RoomTypesModule } from './room-types/room-types.module';
     SearchModule,
     InventoryModule,
     BookingsModule,
+    PaymentsModule,
     RoomTypesModule,
     AmenitiesModule,
     PhotosModule,

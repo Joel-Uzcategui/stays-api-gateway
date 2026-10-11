@@ -8,6 +8,7 @@ interface EnvVars {
   CATALOG_QUEUE: string;
   SEARCH_QUEUE: string;
   BOOKING_QUEUE: string;
+  PAYMENT_QUEUE: string;
   JWT_PUBLIC_KEY: string;
 }
 
@@ -19,6 +20,7 @@ const envsSchema = joi
     CATALOG_QUEUE: joi.string().required(),
     SEARCH_QUEUE: joi.string().required(),
     BOOKING_QUEUE: joi.string().required(),
+    PAYMENT_QUEUE: joi.string().required(),
     JWT_PUBLIC_KEY: joi.string().base64().required(),
   })
   .unknown(true);
@@ -41,5 +43,6 @@ export const envs = {
   catalogQueue: envVars.CATALOG_QUEUE,
   searchQueue: envVars.SEARCH_QUEUE,
   bookingQueue: envVars.BOOKING_QUEUE,
+  paymentQueue: envVars.PAYMENT_QUEUE,
   jwtPublicKey: Buffer.from(envVars.JWT_PUBLIC_KEY, 'base64').toString('utf8'),
 };
