@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 import { randomUUID } from 'node:crypto';
 
 import { CATALOG_SERVICE } from '../config';
@@ -28,9 +29,14 @@ import {
   StorageService,
   processPhoto,
 } from '../storage';
-import { CreatePhotoDto, UpdatePhotoDto } from './dto';
+import { CreatePhotoDto, ReorderPhotosDto, UpdatePhotoDto } from './dto';
 
 const uuid = () => new ParseUUIDPipe({ version: '4' });
+
+interface PhotoView {
+  id: string;
+  url: string;
+}
 
 @Controller('admin')
 @UseGuards(AuthGuard, RolesGuard)
@@ -46,7 +52,8 @@ export class PhotosAdminController {
   // multer's LIMIT_FILE_SIZE to a 413 on its own.
   //
   // The bytes never reach the broker: they are re-encoded and stored here, and
-  // only the resulting key travels to catalog-ms, which owns the Photo row.
+  // only the resulting key travels to catalog-ms, which owns the Photo row. If
+  // the row cannot be written the object is dropped again.
   @Post('hotels/:hotelId/photos/upload')
   @UseInterceptors(
     FileInterceptor('photo', {
@@ -66,10 +73,18 @@ export class PhotosAdminController {
 
     await this.storage.put(key, processed, PHOTO_CONTENT_TYPE);
 
-    return this.catalogClient.send('catalog.photo.createForHotel', {
-      hotelId,
-      url: key,
-    });
+    try {
+      return await firstValueFrom(
+        this.catalogClient.send<PhotoView>('catalog.photo.createForHotel', {
+          hotelId,
+          url: key,
+        }),
+      );
+    } catch (error) {
+      await this.storage.delete(key);
+
+      throw error;
+    }
   }
 
   @Post('hotels/:hotelId/photos')
@@ -86,6 +101,18 @@ export class PhotosAdminController {
   @Get('hotels/:hotelId/photos')
   findForHotel(@Param('hotelId', uuid()) hotelId: string) {
     return this.catalogClient.send('catalog.photo.findForHotel', { hotelId });
+  }
+
+  // The first photo is the cover, so choosing one is a reorder.
+  @Patch('hotels/:hotelId/photos/order')
+  reorderForHotel(
+    @Param('hotelId', uuid()) hotelId: string,
+    @Body() dto: ReorderPhotosDto,
+  ) {
+    return this.catalogClient.send('catalog.photo.reorderForHotel', {
+      hotelId,
+      ...dto,
+    });
   }
 
   @Post('hotels/:hotelId/room-types/:roomTypeId/photos')
@@ -111,8 +138,18 @@ export class PhotosAdminController {
     return this.catalogClient.send('catalog.photo.update', { id, ...dto });
   }
 
+  // The row goes first: a leftover object is invisible, a row pointing at
+  // nothing is a broken photo.
   @Delete('photos/:id')
-  remove(@Param('id', uuid()) id: string) {
-    return this.catalogClient.send('catalog.photo.remove', { id });
+  async remove(@Param('id', uuid()) id: string) {
+    const photo = await firstValueFrom(
+      this.catalogClient.send<PhotoView>('catalog.photo.remove', { id }),
+    );
+
+    if (this.storage.isConfigured) {
+      await this.storage.delete(photo.url);
+    }
+
+    return photo;
   }
 }

@@ -27,11 +27,11 @@ const envsSchema = joi
     BOOKING_QUEUE: joi.string().required(),
     PAYMENT_QUEUE: joi.string().required(),
     JWT_PUBLIC_KEY: joi.string().base64().required(),
-    S3_ENDPOINT: joi.string().uri().optional(),
-    S3_ACCESS_KEY: joi.string().optional(),
-    S3_SECRET_KEY: joi.string().optional(),
-    S3_BUCKET: joi.string().optional(),
-    S3_REGION: joi.string().default('us-east-1'),
+    S3_ENDPOINT: joi.string().uri().empty('').optional(),
+    S3_ACCESS_KEY: joi.string().empty('').optional(),
+    S3_SECRET_KEY: joi.string().empty('').optional(),
+    S3_BUCKET: joi.string().empty('').optional(),
+    S3_REGION: joi.string().empty('').default('us-east-1'),
   })
   .unknown(true);
 
